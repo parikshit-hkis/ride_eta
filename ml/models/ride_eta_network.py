@@ -91,13 +91,15 @@ class PredictionHead(nn.Module):
     def __init__(self,input_size: int,output_size: int,) -> None:
         super().__init__()
 
-        hidden_size = input_size // 2
+        # hidden_size = input_size // 2
 
         self.head = nn.Sequential(
-            nn.Linear(input_size, hidden_size),
+            nn.Linear(input_size, 128),
             nn.ReLU(),
             nn.Dropout(config.DROPOUT),
-            nn.Linear(hidden_size, output_size),
+            nn.Linear(128, 64),
+            nn.ReLU(),
+            nn.Linear(64, output_size),
         )
 
     def forward(self,features: torch.Tensor,) -> torch.Tensor:

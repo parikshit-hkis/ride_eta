@@ -56,17 +56,19 @@ def main() -> None:
     # Fit and transform the training data
     train_df = pipeline.fit_transform(train_df)
 
-    # Use 100% of the training dataset for training.
-    # Since prediction data is in a separate file, we do not split the training file.
+    # Use 80% of the training dataset for training and 20% for validation.
+    # Since prediction data is in a separate file, we do not split the training file for test dataset.
     train_dataframe = train_df.copy()
 
     logger.info("Training samples: %d", len(train_dataframe))
 
-    train_dataset = RideDataset(dataframe=train_dataframe)
+    train_dataset,validation_dataset= pipeline.split_dataset(train_dataframe)
+
+    train_dataset=RideDataset(dataframe=train_dataset)
+    validation_dataset=RideDataset(dataframe=validation_dataset)
 
     train_loader = create_dataloader(dataset=train_dataset, shuffle=config.SHUFFLE)
-    # Pass the training dataset as validation_loader as well since the Trainer class requires it.
-    validation_loader = create_dataloader(dataset=train_dataset, shuffle=False)
+    validation_loader = create_dataloader(dataset=validation_dataset, shuffle=False)
 
     # =========================================================================
     # STEP 2: BUILD AND TRAIN THE MODEL
