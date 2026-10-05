@@ -45,32 +45,32 @@ export default function Sidebar() {
         background: "var(--bg-sidebar)",
         borderRight: "1px solid var(--border-main)",
         color: "var(--text-primary)",
-        transition: "background 0.25s ease, border-color 0.25s ease",
+        transition: "background 200ms ease, border-color 200ms ease",
       }}
-      className="w-64 flex flex-col justify-between h-screen sticky top-0 z-30"
+      className="w-64 flex flex-col justify-between h-screen sticky top-0 z-30 flex-shrink-0"
     >
       <div>
         {/* Logo Header */}
         <div
           style={{ borderBottom: "1px solid var(--border-main)" }}
-          className="p-6 flex items-center space-x-3"
+          className="p-5 flex items-center space-x-3"
         >
           <div
             style={{
-              background: "rgba(6,182,212,0.10)",
-              border: "1px solid rgba(6,182,212,0.30)",
-              color: "var(--accent-cyan)",
+              background: "rgba(79, 70, 229, 0.12)",
+              border: "1px solid rgba(79, 70, 229, 0.30)",
+              color: "var(--accent-indigo)",
             }}
-            className="p-2.5 rounded-xl"
+            className="p-2 rounded-xl flex items-center justify-center"
           >
-            <Car className="w-6 h-6" />
+            <Car className="w-5 h-5" />
           </div>
           <div>
-            <h1 style={{ color: "var(--text-primary)" }} className="font-bold text-lg tracking-wide">
+            <h1 style={{ color: "var(--text-primary)" }} className="font-bold text-base tracking-tight leading-tight">
               Ride ETA
             </h1>
-            <p style={{ color: "var(--accent-cyan)" }} className="text-xs font-medium">
-              ML Intelligence Engine
+            <p style={{ color: "var(--text-secondary)" }} className="text-[11px] font-medium mt-0.5">
+              Enterprise ML Engine
             </p>
           </div>
         </div>
@@ -78,35 +78,36 @@ export default function Sidebar() {
         {/* User Profile Card */}
         <div
           style={{
-            background: "var(--bg-hover)",
+            background: "var(--bg-card)",
             border: "1px solid var(--border-main)",
           }}
-          className="p-4 m-3 rounded-xl"
+          className="p-3.5 m-3 rounded-[14px]"
         >
           {isAuthenticated ? (
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2.5">
                 <div
                   style={{
-                    background: "rgba(6,182,212,0.15)",
-                    border: "1px solid rgba(6,182,212,0.30)",
-                    color: "var(--accent-cyan)",
+                    background: "rgba(79, 70, 229, 0.15)",
+                    border: "1px solid rgba(79, 70, 229, 0.30)",
+                    color: "var(--accent-indigo)",
                   }}
-                  className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs"
+                  className="w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs"
                 >
                   {user?.username?.[0]?.toUpperCase() || "U"}
                 </div>
                 <div>
-                  <p style={{ color: "var(--text-primary)" }} className="text-xs font-bold">
+                  <p style={{ color: "var(--text-primary)" }} className="text-xs font-bold leading-tight">
                     {user?.username}
                   </p>
                   <span
-                    className={`inline-block px-1.5 rounded text-[10px] font-semibold uppercase ${role === "admin"
-                        ? "bg-rose-500/20 text-rose-400 border border-rose-500/30"
+                    className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase mt-0.5 ${
+                      role === "admin"
+                        ? "badge-danger"
                         : role === "data_scientist"
-                          ? "bg-purple-500/20 text-purple-400 border border-purple-500/30"
-                          : "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                      }`}
+                          ? "badge-info"
+                          : "badge-success"
+                    }`}
                   >
                     {role === "data_scientist" ? "Data Sci" : role}
                   </span>
@@ -116,7 +117,7 @@ export default function Sidebar() {
                 onClick={logout}
                 title="Sign Out"
                 style={{ color: "var(--text-muted)" }}
-                className="p-1.5 hover:text-rose-400 transition-colors"
+                className="p-1 hover:text-[var(--accent-rose)] transition-colors rounded-lg"
               >
                 <LogOut className="w-4 h-4" />
               </button>
@@ -124,8 +125,8 @@ export default function Sidebar() {
           ) : (
             <Link
               href="/login"
-              style={{ color: "var(--accent-cyan)" }}
-              className="flex items-center justify-between w-full py-1 text-xs font-semibold hover:opacity-80"
+              style={{ color: "var(--accent-indigo)" }}
+              className="flex items-center justify-between w-full py-1 text-xs font-semibold hover:opacity-90 transition-opacity"
             >
               <div className="flex items-center space-x-2">
                 <LogIn className="w-4 h-4" />
@@ -136,7 +137,7 @@ export default function Sidebar() {
         </div>
 
         {/* Nav Links */}
-        <nav className="px-3 py-2 space-y-1.5">
+        <nav className="px-3 py-2 space-y-1">
           {filteredNavItems.map((item) => {
             const Icon = item.icon;
             const isActive =
@@ -150,21 +151,21 @@ export default function Sidebar() {
                 style={
                   isActive
                     ? {
-                      background: "var(--bg-active)",
-                      color: "var(--text-active)",
-                      border: "1px solid var(--border-active)",
+                      background: "var(--accent-indigo)",
+                      color: "#FFFFFF",
+                      boxShadow: "0 2px 8px rgba(79, 70, 229, 0.25)",
                     }
                     : {
                       color: "var(--text-secondary)",
-                      border: "1px solid transparent",
                     }
                 }
-                className={`flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-150 ${!isActive ? "hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]" : ""
-                  }`}
+                className={`flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
+                  !isActive ? "hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]" : ""
+                }`}
               >
                 <Icon
-                  className="w-5 h-5"
-                  style={{ color: isActive ? "var(--accent-cyan)" : "var(--text-muted)" }}
+                  className="w-4 h-4"
+                  style={{ color: isActive ? "#FFFFFF" : "var(--text-muted)" }}
                 />
                 <span>{item.label}</span>
               </Link>
@@ -178,16 +179,16 @@ export default function Sidebar() {
         {/* Theme Toggle Row */}
         <div
           style={{
-            background: "var(--bg-hover)",
+            background: "var(--bg-card)",
             border: "1px solid var(--border-main)",
           }}
-          className="flex items-center justify-between px-4 py-3 rounded-xl"
+          className="flex items-center justify-between px-3.5 py-2.5 rounded-xl"
         >
           <div className="flex items-center space-x-2">
             {isDark ? (
-              <Moon className="w-4 h-4" style={{ color: "var(--accent-cyan)" }} />
+              <Moon className="w-4 h-4" style={{ color: "var(--accent-indigo)" }} />
             ) : (
-              <Sun className="w-4 h-4" style={{ color: "var(--accent-cyan)" }} />
+              <Sun className="w-4 h-4" style={{ color: "var(--accent-indigo)" }} />
             )}
             <span style={{ color: "var(--text-secondary)" }} className="text-xs font-medium">
               {isDark ? "Dark Mode" : "Light Mode"}
@@ -204,10 +205,10 @@ export default function Sidebar() {
         {/* System Status */}
         <div
           style={{
-            background: "var(--bg-hover)",
+            background: "var(--bg-card)",
             border: "1px solid var(--border-main)",
           }}
-          className="p-4 rounded-xl text-[11px]"
+          className="p-3 rounded-xl text-[11px]"
         >
           <div className="flex items-center space-x-2 font-semibold" style={{ color: "var(--accent-emerald)" }}>
             <Shield className="w-3.5 h-3.5" />
@@ -221,4 +222,3 @@ export default function Sidebar() {
     </aside>
   );
 }
-

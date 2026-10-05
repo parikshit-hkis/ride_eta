@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, useMemo } from "react";
-import { loginUser, getCurrentUser } from "@/lib/api";
+import { loginUser, registerUser, getCurrentUser } from "@/lib/api";
 
 const AuthContext = createContext();
 
@@ -28,6 +28,11 @@ export function AuthProvider({ children }) {
     checkAuth();
   }, []);
 
+  const register = async (username, email, password) => {
+    await registerUser(username, email, password, "data_scientist");
+    return login(username, password);
+  };
+
   const login = async (username, password) => {
     const data = await loginUser(username, password);
     localStorage.setItem("token", data.access_token);
@@ -46,6 +51,7 @@ export function AuthProvider({ children }) {
       role: user?.role || "guest",
       isAuthenticated: !!user,
       loading,
+      register,
       login,
       logout,
     }),

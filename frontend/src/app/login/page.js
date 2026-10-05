@@ -3,15 +3,17 @@
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
-import { Car, Lock, User, ShieldCheck, ArrowRight, AlertCircle } from "lucide-react";
+import { Car, Lock, User, Mail, ShieldCheck, ArrowRight, AlertCircle, UserPlus, LogIn } from "lucide-react";
 
 export default function LoginPage() {
+  const [isRegistering, setIsRegistering] = useState(false);
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const { login } = useAuth();
+  const { login, register } = useAuth();
   const router = useRouter();
 
   const handleSubmit = async (e) => {
@@ -19,68 +21,103 @@ export default function LoginPage() {
     setLoading(true);
     setError(null);
     try {
-      await login(username, password);
+      if (isRegistering) {
+        await register(username, email, password);
+      } else {
+        await login(username, password);
+      }
       router.push("/predictions");
     } catch (err) {
-      setError(err.message || "Invalid username or password");
+      setError(err.message || (isRegistering ? "Registration failed" : "Invalid username or password"));
     } finally {
       setLoading(false);
     }
   };
 
   const fillDemo = (u, p) => {
+    setIsRegistering(false);
     setUsername(u);
     setPassword(p);
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#0B0F19] flex items-center justify-center p-4">
+    <div className="min-h-screen w-full flex items-center justify-center p-4" style={{ background: "var(--bg-main)" }}>
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex p-3 bg-cyan-500/10 border border-cyan-500/30 rounded-2xl text-cyan-400 mb-3">
+          <div
+            style={{
+              background: "rgba(79, 70, 229, 0.12)",
+              border: "1px solid rgba(79, 70, 229, 0.30)",
+              color: "var(--accent-indigo)",
+            }}
+            className="inline-flex p-3 rounded-2xl mb-3"
+          >
             <Car className="w-8 h-8" />
           </div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Ride ETA Platform</h1>
-          <p className="text-xs text-slate-400 mt-1">Sign in with Role-Based Access Control (RBAC)</p>
+          <h1 className="text-2xl font-bold tracking-tight" style={{ color: "var(--text-primary)" }}>
+            Ride ETA Platform
+          </h1>
+          <p className="text-xs mt-1" style={{ color: "var(--text-secondary)" }}>
+            {isRegistering
+              ? "Create a Data Scientist Account"
+              : "Sign in with Role-Based Access Control (RBAC)"}
+          </p>
         </div>
 
-        {/* Login Card */}
-        <div className="glass-card p-8 space-y-6">
+        {/* Login/Register Card */}
+        <div className="enterprise-card p-8 space-y-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-300 text-xs flex items-center space-x-2">
-                <AlertCircle className="w-4 h-4 text-rose-400 flex-shrink-0" />
+              <div className="p-3 badge-danger rounded-xl text-xs flex items-center space-x-2">
+                <AlertCircle className="w-4 h-4 flex-shrink-0" />
                 <span>{error}</span>
               </div>
             )}
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Username</label>
+              <label className="block text-xs font-semibold mb-1.5" style={{ color: "var(--text-primary)" }}>Username</label>
               <div className="relative">
-                <User className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
+                <User className="absolute left-3 top-2.5 w-4 h-4" style={{ color: "var(--text-muted)" }} />
                 <input
                   type="text"
                   required
                   placeholder="Enter username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2 bg-slate-900/90 border border-slate-700/80 rounded-xl text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+                  className="w-full pl-9 pr-4 py-2 text-sm"
                 />
               </div>
             </div>
 
+            {isRegistering && (
+              <div>
+                <label className="block text-xs font-semibold mb-1.5" style={{ color: "var(--text-primary)" }}>Email Address</label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-2.5 w-4 h-4" style={{ color: "var(--text-muted)" }} />
+                  <input
+                    type="email"
+                    required
+                    placeholder="Enter email address"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full pl-9 pr-4 py-2 text-sm"
+                  />
+                </div>
+              </div>
+            )}
+
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Password</label>
+              <label className="block text-xs font-semibold mb-1.5" style={{ color: "var(--text-primary)" }}>Password</label>
               <div className="relative">
-                <Lock className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
+                <Lock className="absolute left-3 top-2.5 w-4 h-4" style={{ color: "var(--text-muted)" }} />
                 <input
                   type="password"
                   required
                   placeholder="Enter password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2 bg-slate-900/90 border border-slate-700/80 rounded-xl text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+                  className="w-full pl-9 pr-4 py-2 text-sm"
                 />
               </div>
             </div>
@@ -88,41 +125,67 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl text-sm flex items-center justify-center space-x-2 transition-all shadow-lg shadow-cyan-500/20 disabled:opacity-40"
+              className="w-full py-3 btn-primary text-sm flex items-center justify-center space-x-2 disabled:opacity-40"
             >
-              <span>{loading ? "Signing in..." : "Sign In"}</span>
+              <span>
+                {loading
+                  ? isRegistering
+                    ? "Registering..."
+                    : "Signing in..."
+                  : isRegistering
+                  ? "Create Account"
+                  : "Sign In"}
+              </span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
 
+          {/* Toggle Register / Sign In Button */}
+          <div className="text-center pt-2">
+            <button
+              type="button"
+              onClick={() => {
+                setIsRegistering(!isRegistering);
+                setError(null);
+              }}
+              style={{ color: "var(--accent-indigo)" }}
+              className="text-xs font-semibold transition-colors inline-flex items-center space-x-1 hover:opacity-80"
+            >
+              {isRegistering ? (
+                <>
+                  <LogIn className="w-3.5 h-3.5 mr-1" />
+                  <span>Already have an account? Sign In</span>
+                </>
+              ) : (
+                <>
+                  <UserPlus className="w-3.5 h-3.5 mr-1" />
+                  <span>Don't have an account? Register as Data Scientist</span>
+                </>
+              )}
+            </button>
+          </div>
+
           {/* Quick Fill Demo Accounts */}
-          <div className="pt-4 border-t border-slate-800/80">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 block mb-2 text-center">
+          <div className="pt-4" style={{ borderTop: "1px solid var(--border-main)" }}>
+            <span className="text-[11px] font-semibold uppercase tracking-wider block mb-2 text-center" style={{ color: "var(--text-secondary)" }}>
               Quick Fill Demo Accounts
             </span>
 
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
                 onClick={() => fillDemo("admin", "admin123")}
-                className="p-2 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 rounded-xl text-[11px] font-semibold text-rose-300 text-center transition-colors"
+                className="p-2 btn-secondary rounded-xl text-[11px] font-semibold text-center transition-colors hover:border-[var(--accent-indigo)]"
               >
-                Admin
+                Admin Demo
               </button>
               <button
                 type="button"
                 onClick={() => fillDemo("ds", "ds123")}
-                className="p-2 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 rounded-xl text-[11px] font-semibold text-purple-300 text-center transition-colors"
+                className="p-2 btn-secondary rounded-xl text-[11px] font-semibold text-center transition-colors hover:border-[var(--accent-indigo)]"
               >
-                Data Sci
+                Data Sci Demo
               </button>
-              {/* <button
-                type="button"
-                onClick={() => fillDemo("viewer", "viewer123")}
-                className="p-2 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 rounded-xl text-[11px] font-semibold text-emerald-300 text-center transition-colors"
-              >
-                Viewer
-              </button> */}
             </div>
           </div>
         </div>

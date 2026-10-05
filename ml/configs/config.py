@@ -307,11 +307,11 @@ RANDOM_SEED = 42
 # LOSS CONFIGURATION
 # =====================================================
 
-ETA_LOSS_WEIGHT = 0.6
+ETA_LOSS_WEIGHT = 0.5
 
-DELAY_LOSS_WEIGHT = 1.8
+DELAY_LOSS_WEIGHT = 2.1
 
-DELAY_THRESHOLD = 0.38
+DELAY_THRESHOLD = 0.40  
 
 # =====================================================
 # CHECKPOINT CONFIGURATION

@@ -32,7 +32,7 @@ export async function fetchApi(endpoint, options = {}) {
         localStorage.removeItem("token");
         window.location.href = "/login";
       }
-      return;
+      throw new Error(errorData.detail || "Unauthorized");
     }
     throw new Error(errorData.detail || `API Error: ${response.statusText}`);
   }
@@ -41,6 +41,21 @@ export async function fetchApi(endpoint, options = {}) {
 }
 
 // Authentication API
+export async function registerUser(username, email, password, role = "data_scientist") {
+  const response = await fetch(`${API_BASE_URL}/auth/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, email, password, role }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.detail || "Registration failed");
+  }
+
+  return response.json();
+}
+
 export async function loginUser(username, password) {
   const response = await fetch(`${API_BASE_URL}/auth/login`, {
     method: "POST",

@@ -141,8 +141,8 @@ export default function AdminPage() {
   if (loading) {
     return (
       <div className="space-y-6 animate-pulse">
-        <div className="h-8 bg-slate-800 rounded w-64"></div>
-        <div className="h-48 bg-slate-900 rounded-xl"></div>
+        <div className="h-8 rounded w-64" style={{ background: "var(--bg-card)" }}></div>
+        <div className="h-48 rounded-xl" style={{ background: "var(--bg-card)" }}></div>
       </div>
     );
   }
@@ -151,22 +151,24 @@ export default function AdminPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white tracking-tight">Admin & Data Pipeline Control</h1>
-        <p className="text-sm text-slate-400 mt-1">
+        <h1 className="text-2xl font-bold tracking-tight" style={{ color: "var(--text-primary)" }}>
+          Admin &amp; Data Pipeline Control
+        </h1>
+        <p className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>
           Upload raw data, trigger feature engineering, run test predictions, and tune model hyperparameters
         </p>
       </div>
 
       {message && (
-        <div className="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-300 text-sm flex items-center space-x-2">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+        <div className="p-4 badge-success rounded-xl text-sm flex items-center space-x-2">
+          <CheckCircle2 className="w-4 h-4" />
           <span>{message}</span>
         </div>
       )}
 
       {error && (
-        <div className="p-4 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-300 text-sm flex items-center space-x-2">
-          <AlertCircle className="w-4 h-4 text-rose-400" />
+        <div className="p-4 badge-danger rounded-xl text-sm flex items-center space-x-2">
+          <AlertCircle className="w-4 h-4" />
           <span>{error}</span>
         </div>
       )}
@@ -174,29 +176,29 @@ export default function AdminPage() {
       {/* Pipeline Status Cards */}
       {pipelineStatus && (
         <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
-          <div className="glass-card p-4">
-            <span className="text-xs text-slate-400 font-semibold uppercase">Raw Orders</span>
-            <p className="text-xl font-bold text-white mt-1">{pipelineStatus.total_raw_orders.toLocaleString()}</p>
+          <div className="enterprise-card p-4">
+            <span className="text-xs font-semibold uppercase" style={{ color: "var(--text-secondary)" }}>Raw Orders</span>
+            <p className="text-xl font-bold mt-1" style={{ color: "var(--text-primary)" }}>{pipelineStatus.total_raw_orders.toLocaleString()}</p>
           </div>
-          <div className="glass-card p-4">
-            <span className="text-xs text-slate-400 font-semibold uppercase">Engineered</span>
-            <p className="text-xl font-bold text-cyan-400 mt-1">{pipelineStatus.engineered_orders.toLocaleString()}</p>
+          <div className="enterprise-card p-4">
+            <span className="text-xs font-semibold uppercase" style={{ color: "var(--text-secondary)" }}>Engineered</span>
+            <p className="text-xl font-bold mt-1" style={{ color: "var(--accent-indigo)" }}>{pipelineStatus.engineered_orders.toLocaleString()}</p>
           </div>
-          <div className="glass-card p-4">
-            <span className="text-xs text-slate-400 font-semibold uppercase">Unprocessed</span>
-            <p className="text-xl font-bold text-amber-400 mt-1">{pipelineStatus.unprocessed_orders.toLocaleString()}</p>
+          <div className="enterprise-card p-4">
+            <span className="text-xs font-semibold uppercase" style={{ color: "var(--text-secondary)" }}>Unprocessed</span>
+            <p className="text-xl font-bold mt-1" style={{ color: "var(--accent-amber)" }}>{pipelineStatus.unprocessed_orders.toLocaleString()}</p>
           </div>
-          <div className="glass-card p-4">
-            <span className="text-xs text-slate-400 font-semibold uppercase">Predictions</span>
-            <p className="text-xl font-bold text-purple-400 mt-1">{pipelineStatus.total_predictions.toLocaleString()}</p>
+          <div className="enterprise-card p-4">
+            <span className="text-xs font-semibold uppercase" style={{ color: "var(--text-secondary)" }}>Predictions</span>
+            <p className="text-xl font-bold mt-1" style={{ color: "var(--accent-blue)" }}>{pipelineStatus.total_predictions.toLocaleString()}</p>
           </div>
-          <div className="glass-card p-4">
-            <span className="text-xs text-slate-400 font-semibold uppercase">Training Runs</span>
-            <p className="text-xl font-bold text-emerald-400 mt-1">{pipelineStatus.total_training_runs}</p>
+          <div className="enterprise-card p-4">
+            <span className="text-xs font-semibold uppercase" style={{ color: "var(--text-secondary)" }}>Training Runs</span>
+            <p className="text-xl font-bold mt-1" style={{ color: "var(--accent-emerald)" }}>{pipelineStatus.total_training_runs}</p>
           </div>
-          <div className="glass-card p-4">
-            <span className="text-xs text-slate-400 font-semibold uppercase">Drivers</span>
-            <p className="text-xl font-bold text-slate-200 mt-1">{pipelineStatus.total_drivers.toLocaleString()}</p>
+          <div className="enterprise-card p-4">
+            <span className="text-xs font-semibold uppercase" style={{ color: "var(--text-secondary)" }}>Drivers</span>
+            <p className="text-xl font-bold mt-1" style={{ color: "var(--text-primary)" }}>{pipelineStatus.total_drivers.toLocaleString()}</p>
           </div>
         </div>
       )}
@@ -204,17 +206,20 @@ export default function AdminPage() {
       {/* Pipeline Control Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Step 1: Upload Raw CSV */}
-        <div className="glass-card p-6 flex flex-col justify-between">
+        <div className="enterprise-card p-6 flex flex-col justify-between">
           <div>
-            <div className="flex items-center space-x-2 text-cyan-400 mb-3">
+            <div className="flex items-center space-x-2 mb-3" style={{ color: "var(--accent-indigo)" }}>
               <UploadCloud className="w-5 h-5" />
-              <h3 className="font-bold text-white text-sm">1. Upload Raw Ride Orders</h3>
+              <h3 className="font-bold text-sm" style={{ color: "var(--text-primary)" }}>1. Upload Raw Ride Orders</h3>
             </div>
-            <p className="text-xs text-slate-400 mb-4">
+            <p className="text-xs mb-4" style={{ color: "var(--text-secondary)" }}>
               Upload production CSV file. Rows are saved into `raw_ride_orders` in PostgreSQL.
             </p>
 
-            <div className="border-2 border-dashed border-slate-700/80 hover:border-cyan-500/50 rounded-xl p-4 text-center transition-colors">
+            <div
+              className="border-2 border-dashed rounded-xl p-4 text-center transition-colors hover:border-[var(--accent-indigo)]"
+              style={{ borderColor: "var(--border-main)", background: "var(--bg-main)" }}
+            >
               <input
                 type="file"
                 accept=".csv"
@@ -223,11 +228,11 @@ export default function AdminPage() {
                 className="hidden"
               />
               <label htmlFor="raw-csv" className="cursor-pointer block">
-                <FileText className="w-8 h-8 text-slate-500 mx-auto mb-2" />
-                <span className="text-xs text-slate-300 font-medium block">
+                <FileText className="w-8 h-8 mx-auto mb-2" style={{ color: "var(--text-muted)" }} />
+                <span className="text-xs font-semibold block" style={{ color: "var(--text-primary)" }}>
                   {rawFile ? rawFile.name : "Choose CSV file"}
                 </span>
-                <span className="text-[11px] text-slate-500 block mt-1">Click to browse</span>
+                <span className="text-[11px] block mt-1" style={{ color: "var(--text-muted)" }}>Click to browse</span>
               </label>
             </div>
           </div>
@@ -235,31 +240,31 @@ export default function AdminPage() {
           <button
             onClick={handleUploadRawCsv}
             disabled={!rawFile || uploadingRaw}
-            className="mt-4 w-full py-2.5 bg-cyan-500 hover:bg-cyan-400 disabled:opacity-40 disabled:cursor-not-allowed text-slate-950 font-bold rounded-xl text-xs transition-colors"
+            className="mt-4 w-full btn-primary disabled:opacity-40 disabled:cursor-not-allowed text-xs font-bold"
           >
             {uploadingRaw ? "Uploading..." : "Upload to Database"}
           </button>
         </div>
 
         {/* Step 2: Feature Engineering */}
-        <div className="glass-card p-6 flex flex-col justify-between">
+        <div className="enterprise-card p-6 flex flex-col justify-between">
           <div>
-            <div className="flex items-center space-x-2 text-purple-400 mb-3">
+            <div className="flex items-center space-x-2 mb-3" style={{ color: "var(--accent-blue)" }}>
               <Cpu className="w-5 h-5" />
-              <h3 className="font-bold text-white text-sm">2. Run Feature Engineering</h3>
+              <h3 className="font-bold text-sm" style={{ color: "var(--text-primary)" }}>2. Run Feature Engineering</h3>
             </div>
-            <p className="text-xs text-slate-400 mb-4">
+            <p className="text-xs mb-4" style={{ color: "var(--text-secondary)" }}>
               Processes unprocessed orders in `raw_ride_orders` using `feature_engineering.py` and stores in `engineered_ride_orders`.
             </p>
 
-            <div className="p-4 bg-slate-900/60 border border-slate-800 rounded-xl text-xs space-y-2 text-slate-400">
+            <div className="p-4 rounded-xl text-xs space-y-2" style={{ background: "var(--bg-main)", border: "1px solid var(--border-main)", color: "var(--text-secondary)" }}>
               <div className="flex justify-between">
                 <span>Unprocessed Queue:</span>
-                <span className="font-bold text-amber-400">{pipelineStatus?.unprocessed_orders || 0} orders</span>
+                <span className="font-bold" style={{ color: "var(--accent-amber)" }}>{pipelineStatus?.unprocessed_orders || 0} orders</span>
               </div>
               <div className="flex justify-between">
                 <span>Engineered Total:</span>
-                <span className="font-bold text-cyan-400">{pipelineStatus?.engineered_orders || 0} orders</span>
+                <span className="font-bold" style={{ color: "var(--accent-indigo)" }}>{pipelineStatus?.engineered_orders || 0} orders</span>
               </div>
             </div>
           </div>
@@ -267,24 +272,27 @@ export default function AdminPage() {
           <button
             onClick={handleRunFeatureEngineering}
             disabled={runningFE || pipelineStatus?.unprocessed_orders === 0}
-            className="mt-4 w-full py-2.5 bg-purple-600 hover:bg-purple-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold rounded-xl text-xs transition-colors"
+            className="mt-4 w-full btn-primary disabled:opacity-40 disabled:cursor-not-allowed text-xs font-bold"
           >
             {runningFE ? "Engineering Features..." : "Run Feature Engineering"}
           </button>
         </div>
 
         {/* Step 3: Run Predictions on Test CSV */}
-        <div className="glass-card p-6 flex flex-col justify-between">
+        <div className="enterprise-card p-6 flex flex-col justify-between">
           <div>
-            <div className="flex items-center space-x-2 text-emerald-400 mb-3">
+            <div className="flex items-center space-x-2 mb-3" style={{ color: "var(--accent-emerald)" }}>
               <PlayCircle className="w-5 h-5" />
-              <h3 className="font-bold text-white text-sm">3. Run Predictions on Test CSV</h3>
+              <h3 className="font-bold text-sm" style={{ color: "var(--text-primary)" }}>3. Run Predictions on Test CSV</h3>
             </div>
-            <p className="text-xs text-slate-400 mb-4">
+            <p className="text-xs mb-4" style={{ color: "var(--text-secondary)" }}>
               Upload a test CSV. Runs PyTorch predictor and saves predicted ETA + delay probability into `predictions`.
             </p>
 
-            <div className="border-2 border-dashed border-slate-700/80 hover:border-emerald-500/50 rounded-xl p-4 text-center transition-colors">
+            <div
+              className="border-2 border-dashed rounded-xl p-4 text-center transition-colors hover:border-[var(--accent-emerald)]"
+              style={{ borderColor: "var(--border-main)", background: "var(--bg-main)" }}
+            >
               <input
                 type="file"
                 accept=".csv"
@@ -293,11 +301,11 @@ export default function AdminPage() {
                 className="hidden"
               />
               <label htmlFor="test-csv" className="cursor-pointer block">
-                <FileText className="w-8 h-8 text-slate-500 mx-auto mb-2" />
-                <span className="text-xs text-slate-300 font-medium block">
+                <FileText className="w-8 h-8 mx-auto mb-2" style={{ color: "var(--text-muted)" }} />
+                <span className="text-xs font-semibold block" style={{ color: "var(--text-primary)" }}>
                   {testFile ? testFile.name : "Choose Test CSV file"}
                 </span>
-                <span className="text-[11px] text-slate-500 block mt-1">Option B: Upload test dataset</span>
+                <span className="text-[11px] block mt-1" style={{ color: "var(--text-muted)" }}>Option B: Upload test dataset</span>
               </label>
             </div>
           </div>
@@ -305,7 +313,7 @@ export default function AdminPage() {
           <button
             onClick={handleRunPrediction}
             disabled={!testFile || runningPred}
-            className="mt-4 w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-40 disabled:cursor-not-allowed text-slate-950 font-bold rounded-xl text-xs transition-colors"
+            className="mt-4 w-full btn-primary disabled:opacity-40 disabled:cursor-not-allowed text-xs font-bold"
           >
             {runningPred ? "Running Predictor..." : "Execute Model Prediction"}
           </button>
@@ -313,15 +321,15 @@ export default function AdminPage() {
       </div>
 
       {/* Hyperparameter Config Editor */}
-      <div className="glass-card p-6">
-        <div className="flex items-center space-x-2 text-cyan-400 mb-4">
+      <div className="enterprise-card p-6">
+        <div className="flex items-center space-x-2 mb-4" style={{ color: "var(--accent-indigo)" }}>
           <Sliders className="w-5 h-5" />
-          <h3 className="font-bold text-white text-base">Model Hyperparameter Configuration</h3>
+          <h3 className="font-bold text-base" style={{ color: "var(--text-primary)" }}>Model Hyperparameter Configuration</h3>
         </div>
 
         <form onSubmit={handleSaveConfig} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-2">
+            <label className="block text-xs font-semibold mb-2" style={{ color: "var(--text-primary)" }}>
               Delay Threshold (0.0 - 1.0)
             </label>
             <input
@@ -331,13 +339,13 @@ export default function AdminPage() {
               max="0.9"
               value={delayThreshold}
               onChange={(e) => setDelayThreshold(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-slate-200 focus:outline-none focus:border-cyan-500"
+              className="w-full px-3 py-2 text-sm"
             />
-            <span className="text-[11px] text-slate-500 mt-1 block">Decision boundary for delay flag</span>
+            <span className="text-[11px] mt-1 block" style={{ color: "var(--text-muted)" }}>Decision boundary for delay flag</span>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-2">
+            <label className="block text-xs font-semibold mb-2" style={{ color: "var(--text-primary)" }}>
               Learning Rate
             </label>
             <input
@@ -345,42 +353,42 @@ export default function AdminPage() {
               step="0.0001"
               value={learningRate}
               onChange={(e) => setLearningRate(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-slate-200 focus:outline-none focus:border-cyan-500"
+              className="w-full px-3 py-2 text-sm"
             />
-            <span className="text-[11px] text-slate-500 mt-1 block">Optimizer learning rate (Adam)</span>
+            <span className="text-[11px] mt-1 block" style={{ color: "var(--text-muted)" }}>Optimizer learning rate (Adam)</span>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-2">
+            <label className="block text-xs font-semibold mb-2" style={{ color: "var(--text-primary)" }}>
               Epochs
             </label>
             <input
               type="number"
               value={epochs}
               onChange={(e) => setEpochs(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-slate-200 focus:outline-none focus:border-cyan-500"
+              className="w-full px-3 py-2 text-sm"
             />
-            <span className="text-[11px] text-slate-500 mt-1 block">Maximum training epochs</span>
+            <span className="text-[11px] mt-1 block" style={{ color: "var(--text-muted)" }}>Maximum training epochs</span>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-2">
+            <label className="block text-xs font-semibold mb-2" style={{ color: "var(--text-primary)" }}>
               Batch Size
             </label>
             <input
               type="number"
               value={batchSize}
               onChange={(e) => setBatchSize(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-slate-200 focus:outline-none focus:border-cyan-500"
+              className="w-full px-3 py-2 text-sm"
             />
-            <span className="text-[11px] text-slate-500 mt-1 block">DataLoader batch size</span>
+            <span className="text-[11px] mt-1 block" style={{ color: "var(--text-muted)" }}>DataLoader batch size</span>
           </div>
 
           <div className="lg:col-span-4 flex justify-end">
             <button
               type="submit"
               disabled={savingConfig}
-              className="px-6 py-2.5 bg-cyan-500 hover:bg-cyan-400 disabled:opacity-40 text-slate-950 font-bold rounded-xl text-xs flex items-center space-x-2 transition-colors shadow-lg shadow-cyan-500/20"
+              className="btn-primary disabled:opacity-40 text-xs font-bold flex items-center space-x-2"
             >
               <Save className="w-4 h-4" />
               <span>{savingConfig ? "Saving..." : "Save Configuration"}</span>

@@ -15,10 +15,11 @@ from backend.services.auth_service import (
     create_access_token,
     get_current_user,
 )
+from datetime import timedelta
 
 router = APIRouter(prefix="/api/auth", tags=["Authentication"])
 
-
+# call when user try to register
 @router.post("/register", response_model=UserResponse)
 def register_user(user_in: UserCreate, db: Session = Depends(get_db)):
     """Register a new user account."""
@@ -53,7 +54,7 @@ def login_user(user_in: UserLogin, db: Session = Depends(get_db)):
             detail="Incorrect username or password",
         )
 
-    access_token = create_access_token(data={"sub": user.username, "role": user.role})
+    access_token = create_access_token(data={"sub": user.username, "role": user.role},expires_delta=timedelta(hours=12))
     return Token(access_token=access_token, user=user)
 
 

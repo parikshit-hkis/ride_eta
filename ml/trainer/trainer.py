@@ -226,5 +226,3 @@ class Trainer:
             dataloader=self.validation_loader,
             training=False,
         )
-
-    

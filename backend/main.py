@@ -26,7 +26,7 @@ from backend.routers import predictions, model_metrics, training, drivers, admin
 # Add ML code to path for services
 if str(ML_DIR) not in sys.path:
     sys.path.insert(0, str(ML_DIR))
-
+ 
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
@@ -36,10 +36,24 @@ logger = logging.getLogger(__name__)
 # Create tables
 Base.metadata.create_all(bind=engine)
 
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    logger.info("FastAPI Server Startup Complete")
+    yield
+    logger.info("Disposing SQLAlchemy PostgreSQL connection pool...")
+    # try:
+    #     engine.dispose()
+    # except Exception as e:
+    #     logger.warning(f"Error disposing engine: {e}")
+    logger.info("FastAPI Server Shutdown Complete")
+
 app = FastAPI(
     title="Ride ETA Platform",
     description="Production-grade ETA prediction and delay classification system",
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 # CORS middleware for Next.js frontend
@@ -60,12 +74,10 @@ app.include_router(admin.router)
 app.include_router(auth.router)
 app.include_router(websocket.router)
 
-
 @app.get("/api/health")
 def health_check():
     """Health check endpoint."""
     return {"status": "healthy", "service": "ride-eta-platform"}
-
 
 @app.post("/api/admin/refresh-drivers")
 def refresh_drivers_endpoint():
@@ -78,3 +90,17 @@ def refresh_drivers_endpoint():
         return result
     finally:
         db.close()
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(
+        "backend.main:app",
+        host="0.0.0.0",
+        port=8000,
+        reload=True,
+        timeout_graceful_shutdown=1,
+        reload_dirs=["backend", "ml"],
+        reload_excludes=["*.pyc", "*__pycache__*", "ml/data/*", "ml/saved_models/*", "logs/*"],
+    )
+
+

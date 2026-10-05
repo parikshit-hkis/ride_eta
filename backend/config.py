@@ -1,7 +1,21 @@
 """
 Backend configuration for the Ride ETA Platform.
+Dynamically reads from .env environment variables with robust fallbacks.
 """
+import os
 from pathlib import Path
+
+# Load python-dotenv if available
+try:
+    from dotenv import load_dotenv
+    # Load .env file from project root directory
+    env_path = Path(__file__).resolve().parent.parent / ".env"
+    if env_path.exists():
+        load_dotenv(dotenv_path=env_path)
+    else:
+        load_dotenv()
+except ImportError:
+    pass
 
 # =====================================================
 # PROJECT PATHS
@@ -19,24 +33,28 @@ UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 # =====================================================
 # DATABASE
 # =====================================================
-DATABASE_URL = "postgresql://postgres:1632@localhost:5432/ride_eta_db"
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    "postgresql://postgres:1632@localhost:5432/ride_eta_db"
+)
 
 # =====================================================
 # AUTHENTICATION & SECURITY
 # =====================================================
-SECRET_KEY = "ride-eta-secret-key-change-in-production-super-secure"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 24 hours
+SECRET_KEY = os.getenv(
+    "SECRET_KEY",
+    "ride-eta-secret-key-change-in-production-super-secure"
+)
+ALGORITHM = os.getenv("ALGORITHM", "HS256")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "1440"))
 
 # =====================================================
-# CORS (for Next.js frontend on port 3000)
+# CORS (for Next.js frontend)
 # =====================================================
-CORS_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-]
+raw_cors = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000")
+CORS_ORIGINS = [origin.strip() for origin in raw_cors.split(",") if origin.strip()]
 
 # =====================================================
 # API
 # =====================================================
-API_PREFIX = "/api"
+API_PREFIX = os.getenv("API_PREFIX", "/api")

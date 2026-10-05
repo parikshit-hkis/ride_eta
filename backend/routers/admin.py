@@ -186,6 +186,7 @@ def run_feature_engineering(db: Session = Depends(get_db),):
 @router.post("/run-prediction")
 async def run_prediction(file: UploadFile = File(...), db: Session = Depends(get_db)):
     """Run model predictions on an uploaded CSV file."""
+    # accepts only csv file otherwise it will throw error
     if not file.filename.endswith(".csv"):
         raise HTTPException(status_code=400, detail="Only CSV files are accepted")
 
@@ -196,7 +197,7 @@ async def run_prediction(file: UploadFile = File(...), db: Session = Depends(get
     result = run_prediction_on_dataframe(df, db)
     return result
 
-
+# to show pipeline status in dashboard
 @router.get("/pipeline-status", response_model=PipelineStatusResponse,dependencies=[Depends(require_role("admin"))])
 def get_pipeline_status(db: Session = Depends(get_db)):
     """Get data pipeline status: counts of raw, engineered, predictions, etc."""

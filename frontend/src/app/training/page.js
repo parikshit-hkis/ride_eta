@@ -119,7 +119,7 @@ export default function TrainingPage() {
     }
   };
 
-  // Chart options & data
+  // Restrained enterprise chart colors
   const epochLabels = epochs.map((e) => `Epoch ${e.epoch}`);
   const lossChartData = {
     labels: epochLabels,
@@ -127,16 +127,16 @@ export default function TrainingPage() {
       {
         label: "Train Loss",
         data: epochs.map((e) => e.train_loss),
-        borderColor: "#06b6d4",
-        backgroundColor: "rgba(6, 182, 212, 0.1)",
-        tension: 0.3,
+        borderColor: "#4F46E5",
+        backgroundColor: "rgba(79, 70, 229, 0.1)",
+        tension: 0.2,
       },
       {
         label: "Validation Loss",
         data: epochs.map((e) => e.val_loss),
-        borderColor: "#a855f7",
-        backgroundColor: "rgba(168, 85, 247, 0.1)",
-        tension: 0.3,
+        borderColor: "#3B82F6",
+        backgroundColor: "rgba(59, 130, 246, 0.1)",
+        tension: 0.2,
       },
     ],
   };
@@ -147,14 +147,14 @@ export default function TrainingPage() {
       {
         label: "Train MAE (min)",
         data: epochs.map((e) => e.train_mae),
-        borderColor: "#10b981",
-        tension: 0.3,
+        borderColor: "#10B981",
+        tension: 0.2,
       },
       {
         label: "Validation MAE (min)",
         data: epochs.map((e) => e.val_mae),
-        borderColor: "#f59e0b",
-        tension: 0.3,
+        borderColor: "#F97316",
+        tension: 0.2,
       },
     ],
   };
@@ -165,12 +165,12 @@ export default function TrainingPage() {
     plugins: {
       legend: {
         position: "top",
-        labels: { color: "#94a3b8", font: { size: 11 } },
+        labels: { color: "#94a3b8", font: { size: 11, family: "Inter" } },
       },
     },
     scales: {
-      x: { grid: { color: "rgba(255,255,255,0.05)" }, ticks: { color: "#64748b" } },
-      y: { grid: { color: "rgba(255,255,255,0.05)" }, ticks: { color: "#64748b" } },
+      x: { grid: { color: "rgba(148,163,184,0.08)" }, ticks: { color: "#64748b" } },
+      y: { grid: { color: "rgba(148,163,184,0.08)" }, ticks: { color: "#64748b" } },
     },
   };
 
@@ -179,8 +179,10 @@ export default function TrainingPage() {
       {/* Header & Controls */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Live Training Monitor</h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <h1 className="text-2xl font-bold tracking-tight" style={{ color: "var(--text-primary)" }}>
+            Live Training Monitor
+          </h1>
+          <p className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>
             Real-time WebSocket monitoring of PyTorch model training across epochs
           </p>
         </div>
@@ -190,7 +192,7 @@ export default function TrainingPage() {
             <button
               onClick={handleStopTraining}
               disabled={actionLoading}
-              className="px-4 py-2.5 bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 rounded-xl text-xs font-semibold flex items-center space-x-2 transition-all shadow-lg shadow-rose-500/10"
+              className="btn-danger flex items-center space-x-2 text-xs font-semibold"
             >
               <Square className="w-4 h-4" />
               <span>Stop Training</span>
@@ -199,145 +201,134 @@ export default function TrainingPage() {
             <button
               onClick={handleStartTraining}
               disabled={actionLoading}
-              className="px-5 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl text-xs flex items-center space-x-2 transition-all shadow-lg shadow-cyan-500/20"
+              className="btn-primary flex items-center space-x-2 text-xs font-semibold"
             >
-              <Play className="w-4 h-4 fill-slate-950" />
-              <span>{actionLoading ? "Starting..." : "Start Training"}</span>
+              <Play className="w-4 h-4" />
+              <span>Start Training Run</span>
             </button>
           )}
         </div>
       </div>
 
       {error && (
-        <div className="p-4 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-300 text-sm">
+        <div className="p-4 badge-danger rounded-xl text-sm">
           {error}
         </div>
       )}
 
-      {/* Live Status Card */}
-      <div className="glass-card p-6 border-l-4 border-l-cyan-500">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="flex items-center space-x-4">
-            <div className={`p-3 rounded-xl ${isTraining ? "bg-cyan-500/20 text-cyan-400 animate-pulse" : "bg-slate-800 text-slate-400"}`}>
-              <Activity className="w-6 h-6" />
-            </div>
-            <div>
-              <div className="flex items-center space-x-2">
-                <h2 className="text-lg font-bold text-white">
-                  {isTraining ? "Training Loop Running" : "Status: Idle"}
-                </h2>
-                <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${isTraining ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30" : "bg-slate-800 text-slate-400"
-                  }`}>
-                  {isTraining ? "Active" : "Ready"}
-                </span>
-              </div>
-              <p className="text-xs text-slate-400 mt-1">
-                {isTraining
-                  ? `Training Run #${currentRun?.id || ""} • ${currentRun?.completed_epochs || 0} / ${currentRun?.total_epochs || 100} Epochs`
-                  : "Click 'Start Training' to train model on 100% PostgreSQL dataset (85% train / 15% val split)"}
-              </p>
-            </div>
+      {/* Live Run Metrics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="enterprise-card p-5">
+          <span className="text-xs font-semibold uppercase" style={{ color: "var(--text-secondary)" }}>Status</span>
+          <div className="mt-2 flex items-center space-x-2">
+            <span className={isTraining ? "badge-info" : "badge-success"}>
+              {isTraining ? "TRAINING IN PROGRESS" : "IDLE"}
+            </span>
           </div>
-
-          {isTraining && currentRun && (
-            <div className="flex items-center space-x-6 text-xs font-mono">
-              <div>
-                <span className="text-slate-400 block">Best Epoch</span>
-                <span className="text-emerald-400 font-bold text-base">#{currentRun.best_epoch || 1}</span>
-              </div>
-              <div>
-                <span className="text-slate-400 block">Best Val Loss</span>
-                <span className="text-purple-400 font-bold text-base">{currentRun.best_val_loss?.toFixed(4) || "-"}</span>
-              </div>
-            </div>
-          )}
+          <p className="text-xs mt-2" style={{ color: "var(--text-muted)" }}>
+            {currentRun ? `Run ID #${currentRun.id}` : "Ready to trigger"}
+          </p>
         </div>
 
-        {/* Progress Bar */}
-        {isTraining && currentRun && (
-          <div className="mt-4 pt-4 border-t border-slate-800">
-            <div className="flex justify-between text-xs text-slate-400 mb-1.5 font-mono">
-              <span>Progress</span>
-              <span>{Math.round(((currentRun.completed_epochs || 0) / (currentRun.total_epochs || 100)) * 100)}%</span>
-            </div>
-            <div className="w-full bg-slate-900 rounded-full h-2 overflow-hidden">
-              <div
-                className="bg-gradient-to-r from-cyan-500 to-purple-500 h-full transition-all duration-300"
-                style={{
-                  width: `${((currentRun.completed_epochs || 0) / (currentRun.total_epochs || 100)) * 100}%`,
-                }}
-              ></div>
-            </div>
+        <div className="enterprise-card p-5">
+          <span className="text-xs font-semibold uppercase" style={{ color: "var(--text-secondary)" }}>Epoch Progress</span>
+          <p className="text-2xl font-bold mt-1" style={{ color: "var(--text-primary)" }}>
+            {currentRun ? `${currentRun.completed_epochs} / ${currentRun.total_epochs}` : "0 / 0"}
+          </p>
+          <div className="w-full rounded-full h-1.5 mt-2 overflow-hidden" style={{ background: "var(--bg-main)" }}>
+            <div
+              className="h-full rounded-full transition-all duration-300"
+              style={{
+                width: currentRun ? `${(currentRun.completed_epochs / currentRun.total_epochs) * 100}%` : "0%",
+                backgroundColor: "var(--accent-indigo)"
+              }}
+            ></div>
           </div>
-        )}
+        </div>
+
+        <div className="enterprise-card p-5">
+          <span className="text-xs font-semibold uppercase" style={{ color: "var(--text-secondary)" }}>Best Validation Loss</span>
+          <p className="text-2xl font-bold mt-1" style={{ color: "var(--accent-indigo)" }}>
+            {currentRun?.best_val_loss != null ? currentRun.best_val_loss.toFixed(4) : "—"}
+          </p>
+          <p className="text-xs mt-1" style={{ color: "var(--text-muted)" }}>
+            {currentRun?.best_epoch != null ? `Achieved at epoch ${currentRun.best_epoch}` : "No epoch logged"}
+          </p>
+        </div>
+
+        <div className="enterprise-card p-5">
+          <span className="text-xs font-semibold uppercase" style={{ color: "var(--text-secondary)" }}>Latest Validation MAE</span>
+          <p className="text-2xl font-bold mt-1" style={{ color: "var(--accent-emerald)" }}>
+            {epochs.length > 0 ? `${epochs[epochs.length - 1].val_mae.toFixed(2)} min` : "—"}
+          </p>
+          <p className="text-xs mt-1" style={{ color: "var(--text-muted)" }}>Mean absolute error</p>
+        </div>
       </div>
 
       {/* Live Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Loss Curve */}
-        <div className="glass-card p-5">
-          <h3 className="text-sm font-bold text-white mb-3 flex items-center space-x-2">
-            <TrendingDown className="w-4 h-4 text-cyan-400" />
-            <span>Loss Curves (Train vs Validation)</span>
+        <div className="enterprise-card p-6">
+          <h3 className="text-sm font-bold mb-4 flex items-center space-x-2" style={{ color: "var(--text-primary)" }}>
+            <TrendingDown className="w-4 h-4" style={{ color: "var(--accent-indigo)" }} />
+            <span>Loss Curves (Train vs Val)</span>
           </h3>
           <div className="h-64">
-            {epochs.length > 0 ? (
-              <Line data={lossChartData} options={chartOptions} />
-            ) : (
-              <div className="h-full flex items-center justify-center text-xs text-slate-500">
-                Start training to view real-time loss curves
+            {epochs.length === 0 ? (
+              <div className="h-full flex items-center justify-center text-xs" style={{ color: "var(--text-muted)" }}>
+                Start training to observe live loss curve descent...
               </div>
+            ) : (
+              <Line data={lossChartData} options={chartOptions} />
             )}
           </div>
         </div>
 
-        {/* MAE Curve */}
-        <div className="glass-card p-5">
-          <h3 className="text-sm font-bold text-white mb-3 flex items-center space-x-2">
-            <Zap className="w-4 h-4 text-emerald-400" />
-            <span>ETA Error (MAE) per Epoch</span>
+        <div className="enterprise-card p-6">
+          <h3 className="text-sm font-bold mb-4 flex items-center space-x-2" style={{ color: "var(--text-primary)" }}>
+            <Zap className="w-4 h-4" style={{ color: "var(--accent-emerald)" }} />
+            <span>ETA Error Curves (MAE in minutes)</span>
           </h3>
           <div className="h-64">
-            {epochs.length > 0 ? (
-              <Line data={maeChartData} options={chartOptions} />
-            ) : (
-              <div className="h-full flex items-center justify-center text-xs text-slate-500">
-                Start training to view real-time MAE progress
+            {epochs.length === 0 ? (
+              <div className="h-full flex items-center justify-center text-xs" style={{ color: "var(--text-muted)" }}>
+                Start training to observe live ETA error progression...
               </div>
+            ) : (
+              <Line data={maeChartData} options={chartOptions} />
             )}
           </div>
         </div>
       </div>
 
-      {/* Epoch History Log */}
+      {/* Epochs Detail Log Table */}
       {epochs.length > 0 && (
-        <div className="glass-card overflow-hidden">
-          <div className="p-4 border-b border-slate-800">
-            <h3 className="text-sm font-bold text-white">Live Epoch Logs</h3>
+        <div className="enterprise-card overflow-hidden">
+          <div className="p-4" style={{ borderBottom: "1px solid var(--border-main)" }}>
+            <h3 className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>Epoch Progress Log</h3>
           </div>
-          <div className="max-h-60 overflow-y-auto">
-            <table className="w-full text-left text-xs text-slate-300">
-              <thead className="bg-slate-900/90 uppercase text-[11px] text-slate-400 sticky top-0">
+          <div className="max-h-80 overflow-y-auto">
+            <table className="w-full text-left text-xs font-mono">
+              <thead>
                 <tr>
-                  <th className="px-4 py-2.5">Epoch</th>
-                  <th className="px-4 py-2.5">Train Loss</th>
-                  <th className="px-4 py-2.5">Val Loss</th>
-                  <th className="px-4 py-2.5">Train MAE</th>
-                  <th className="px-4 py-2.5">Val MAE</th>
-                  <th className="px-4 py-2.5">Train F1</th>
-                  <th className="px-4 py-2.5">Val F1</th>
+                  <th className="px-4 py-3">Epoch</th>
+                  <th className="px-4 py-3">Train Loss</th>
+                  <th className="px-4 py-3">Val Loss</th>
+                  <th className="px-4 py-3">Train MAE</th>
+                  <th className="px-4 py-3">Val MAE</th>
+                  <th className="px-4 py-3">Train F1</th>
+                  <th className="px-4 py-3">Val F!</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60 font-mono">
+              <tbody className="divide-y" style={{ borderColor: "var(--border-main)" }}>
                 {epochs.map((ep) => (
-                  <tr key={ep.epoch} className="hover:bg-slate-800/40">
-                    <td className="px-4 py-2 font-bold text-cyan-400">#{ep.epoch}</td>
-                    <td className="px-4 py-2">{ep.train_loss?.toFixed(4)}</td>
-                    <td className="px-4 py-2">{ep.val_loss?.toFixed(4)}</td>
-                    <td className="px-4 py-2">{ep.train_mae?.toFixed(2)} min</td>
-                    <td className="px-4 py-2 text-emerald-400">{ep.val_mae?.toFixed(2)} min</td>
-                    <td className="px-4 py-2">{(ep.train_f1 * 100).toFixed(1)}%</td>
-                    <td className="px-4 py-2 text-purple-400">{(ep.val_f1 * 100).toFixed(1)}%</td>
+                  <tr key={ep.epoch}>
+                    <td className="px-4 py-2.5 font-bold" style={{ color: "var(--text-primary)" }}>Epoch {ep.epoch}</td>
+                    <td className="px-4 py-2.5">{ep.train_loss?.toFixed(4)}</td>
+                    <td className="px-4 py-2.5 font-bold" style={{ color: "var(--accent-indigo)" }}>{ep.val_loss?.toFixed(4)}</td>
+                    <td className="px-4 py-2.5">{ep.train_mae?.toFixed(2)} min</td>
+                    <td className="px-4 py-2.5 font-bold" style={{ color: "var(--accent-emerald)" }}>{ep.val_mae?.toFixed(2)} min</td>
+                    <td className="px-4 py-2.5">{(ep.train_f1 * 100)?.toFixed(1)}%</td>
+                    <td className="px-4 py-2.5 font-bold" style={{ color: "var(--accent-blue)" }}>{(ep.val_f1 * 100)?.toFixed(1)}%</td>
                   </tr>
                 ))}
               </tbody>

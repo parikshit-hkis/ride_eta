@@ -65,7 +65,7 @@ def list_drivers(
     sort_by: str = Query("delay_rate", description="Column to sort by"),
     sort_order: str = Query("desc", description="'asc' or 'desc'"),
     db: Session = Depends(get_db),
-):
+    ):
     """List all drivers with pagination and sorting."""
     query = db.query(Driver)
 

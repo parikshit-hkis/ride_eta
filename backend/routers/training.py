@@ -22,7 +22,7 @@ router = APIRouter(prefix="/api/training", tags=["Training"])
 _training_task = None
 
 
-@router.post("/start", response_model=TrainingRunResponse)
+@router.post("/start", response_model=TrainingRunResponse,dependencies=[Depends(require_role("admin"))])
 def start_training(db: Session = Depends(get_db)):
     """Start a new training run in the background."""
     # Check if already training

@@ -18,7 +18,6 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
-
 @router.websocket("/ws/training")
 async def training_websocket(websocket: WebSocket):
     """
@@ -30,8 +29,7 @@ async def training_websocket(websocket: WebSocket):
 
     try:
         while True:
-            db = SessionLocal()
-            try:
+            with SessionLocal() as db:
                 # Find active training run
                 active_run = db.query(TrainingRun).filter(TrainingRun.status == "running").first()
 
@@ -91,12 +89,11 @@ async def training_websocket(websocket: WebSocket):
                         await websocket.send_text(json.dumps(message))
                         last_sent_key = current_key
 
-            finally:
-                db.close()
-
             await asyncio.sleep(2)  # Check DB every 2 seconds silently
 
-    except WebSocketDisconnect:
+    except (WebSocketDisconnect, RuntimeError):
         logger.info("Training WebSocket client disconnected")
+    except asyncio.CancelledError:
+        logger.info("WebSocket task cancelled (server reload)")
     except Exception as e:
         logger.error(f"WebSocket error: {e}")
